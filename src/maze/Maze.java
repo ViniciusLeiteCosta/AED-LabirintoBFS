@@ -74,7 +74,7 @@ public class Maze extends JFrame {
     // o construtor do labirinto, isso será a primeira coisa que será executada quando criar um objeto dessa classe.
     public Maze() {
         setTitle("Labirinto");
-        setSize(960, 530);
+        setSize(800, 530);
 
         URL urlIcon = getClass().getResource("flat-theme-action-maze-icon.png");
         ImageIcon image = new ImageIcon(urlIcon);
@@ -101,7 +101,7 @@ public class Maze extends JFrame {
         // Aqui escolhemos a posição manualmente, por isso configuramos o Layout como nulo.
         solveBFS.setBounds(500, 50, 150, 40);
         genRandom.setBounds(500, 120, 170, 40);
-        exit.setBounds(760, 50, 100, 40);
+        exit.setBounds(500, 180, 100, 40);
 
         // O que acontece quando você clica no botão Gerar Labirinto Aleatório
         genRandom.addActionListener(new ActionListener() {
@@ -334,7 +334,7 @@ public class Maze extends JFrame {
         });
     }
 
-    public void solveQueue() { //BFS corresponde a fila.
+    public void solveQueue() { //BFS .
         //Iniciar Timer
         startTime = System.nanoTime();
 
