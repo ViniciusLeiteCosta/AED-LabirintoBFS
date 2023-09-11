@@ -68,9 +68,6 @@ public class Maze extends JFrame {
     //tempo de parada
     long stopTime;
 
-    // take copy of the original maze, used when we want to remove (clear) the solution from the JFrame
-    int[][] savedMaze = clone();
-
     // o construtor do labirinto, isso será a primeira coisa que será executada quando criar um objeto dessa classe.
     public Maze() {
         setTitle("Labirinto");
@@ -109,7 +106,6 @@ public class Maze extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int x[][] = GenerateArray();
                 repaint = true;
-                restore(x);
                 repaint();
             }
         });
@@ -127,12 +123,10 @@ public class Maze extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (arr == null) {
-                    restore(savedMaze);
                     repaint = false;
                     solveQueue();
                     repaint();
                 } else {
-                    restore(arr);
                     repaint = false;
                     solveQueue();
                     repaint();
@@ -224,18 +218,6 @@ public class Maze extends JFrame {
             }
         }
         return mazeCopy;
-    }
-
-    // para restaurar o labirinto ao estado inicial
-    public void restore(int[][] savedMazed) {
-        for (int i = 0; i < Size(); i++) {
-            for (int j = 0; j < Size(); j++) {
-                maze[i][j] = savedMazed[i][j];
-            }
-        }
-
-        maze[1][1] = 2;  // ponto inicial
-        maze[2][9] = 8;  // objetivo
     }
 
     //gerar labirinto aleatório com valores de 0 e 1 (blocos preto e branco)
@@ -335,8 +317,6 @@ public class Maze extends JFrame {
     }
 
     public void solveQueue() { //BFS .
-        //Iniciar Timer
-        startTime = System.nanoTime();
 
         //criar LinkedList de MazPos (o nó) é o que nós iremos adicionar e remover da LinkedList
         LinkedList<MazePos> list = new LinkedList<MazePos>();
@@ -358,7 +338,8 @@ public class Maze extends JFrame {
             //marcar a posição atual como explorada
             mark(crt, V);
 
-            //add its neighbors in the queue
+            //adiciona os vizinhos na lista
+
             next = crt.north();    //cima
             if (isInMaze(next) && isClear(next)) { //isClear() function is used to implement Graph Search
                 list.add(next);
