@@ -369,4 +369,5 @@ public class Maze extends JFrame {
         System.out.println("\nAchar o caminho por algoritmo BFS: ");
         Print();
     }
+    
 }
