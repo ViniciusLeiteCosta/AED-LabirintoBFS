@@ -12,8 +12,53 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Maze extends JFrame {
+    private Map<String, String> graph = new HashMap<>();
+    private int[][] cellValues; // Matriz para armazenar os valores associados às células
+
+    public void readGraphFromFile(String filePath) {
+        int vertexCount = 0;
+        int edgeCount = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length == 2) {
+                    // Se a linha contém dois vértices, conte como uma aresta
+                    edgeCount++;
+                } else if (parts.length == 3) {
+                    // Se a linha contém três partes, conte como uma aresta e um valor
+                    edgeCount++;
+                }
+                vertexCount += parts.length; // Cada parte é um vértice
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Número de vértices: " + vertexCount);
+        System.out.println("Número de arestas: " + edgeCount);
+    }
+
+    // Método para garantir que a matriz de valores tenha espaço suficiente
+    private void ensureCellValueMatrixSize(int size) {
+        if (cellValues == null || cellValues.length < size) {
+            int[][] newMatrix = new int[size][size];
+            if (cellValues != null) {
+                for (int i = 0; i < cellValues.length; i++) {
+                    System.arraycopy(cellValues[i], 0, newMatrix[i], 0, cellValues[i].length);
+                }
+            }
+            cellValues = newMatrix;
+        }
+    }
 
     //pôe números para toda cor que será usada, cores são definidas depois (linha:349 in paint)
     //parades são os blocos pretos
@@ -38,6 +83,12 @@ public class Maze extends JFrame {
     final static int END_I = 2, END_J = 9;
 
     int[][] maze = new int[][]{ // array inicial do labirinto
+            //Aqui é possível mudar os valores da matriz afim de modificar o labirinto
+            // (1) Paredes
+            // (2) Início
+            // (0) Caminho
+            // (8) Saída
+            // (9) É apenas para representação gráfica do caminho que foi explorado (cor verde)
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {1, 2, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 0, 0, 1, 0, 1, 1, 0, 8},
@@ -68,7 +119,6 @@ public class Maze extends JFrame {
     //tempo de parada
     long stopTime;
 
-    // take copy of the original maze, used when we want to remove (clear) the solution from the JFrame
     int[][] savedMaze = clone();
 
     // o construtor do labirinto, isso será a primeira coisa que será executada quando criar um objeto dessa classe.
@@ -191,7 +241,7 @@ public class Maze extends JFrame {
     }
 
     public boolean isMarked(MazePos pos) {
-        return isMarked(pos.i(), pos.j());   
+        return isMarked(pos.i(), pos.j());
     }
 
     // retornar verdadeiro se o nó é igual 0 (Branco, Inexplorado)
@@ -264,7 +314,7 @@ public class Maze extends JFrame {
         g.translate(70, 70);      //faça o labirinto começar em 70 para x e 70 para y
 
         // Desenhar labirinto
-        if (repaint == true) {  // what to do if the repaint was set to true (draw the maze as a problem without the solution)
+        if (repaint == true) {
             for (int row = 0; row < maze.length; row++) {
                 for (int col = 0; col < maze[0].length; col++) {
                     Color color;
@@ -278,7 +328,6 @@ public class Maze extends JFrame {
                         case 2:
                             color = Color.YELLOW;      // inicio   (amarelo)
                             break;
-                        //   case '.' : color=Color.ORANGE; break;
                         default:
                             color = Color.WHITE;        // caminho  (branco)
                     }
@@ -305,10 +354,10 @@ public class Maze extends JFrame {
                             color = Color.YELLOW;      // estado inicial   (amarelo)
                             break;
                         case 9:
-                            color = Color.green;   // caminho do início até a saída (verde)
+                            color = Color.green;       // caminho do início até a saída (verde)
                             break;
                         default:
-                            color = Color.WHITE;   // caminho livre (branco)
+                            color = Color.WHITE;       // caminho livre (branco)
                     }
                     g.setColor(color);
                     g.fillRect(40 * col, 40 * row, 40, 40);  // cobrir retângulo com cor
@@ -323,18 +372,22 @@ public class Maze extends JFrame {
 
     }
 
-    public static void main(String[] args) {  // the main program
+    public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(new Runnable() {  // run the program through Swing (the entire program is run by GUI)
-            // we chose invokelater it won't make much difference if we chose invokeAndWait since the operation done by the first button will be done in a very short time
-            @Override                                // you can read more here: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/initial.html
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                Maze maze = new Maze();              // we create new class which will invoke the constructor
+                Maze maze = new Maze();
+                // Leia o grafo a partir de um arquivo de texto
+
+                String filePath = "C:/Users/usuar/OneDrive/Área de Trabalho/AED-LabirintoBFS/src/maze/grafo.txt";
+
             }
         });
     }
 
     public void solveQueue() { //BFS .
+
         //Iniciar Timer
         startTime = System.nanoTime();
 
@@ -375,7 +428,6 @@ public class Maze extends JFrame {
             if (isInMaze(next) && isClear(next)) {
                 list.add(next);
             }
-
         }
 
         if (!list.isEmpty()) {
