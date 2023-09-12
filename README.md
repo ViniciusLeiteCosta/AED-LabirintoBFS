@@ -9,6 +9,8 @@ Tayane Cibely
 
 Vinicius Leite 
 
+OBS: Sugerimos que utilize a versão que está na pasta "LABIRINTOAED2SPRING", esta versão da pasta principal rodou bem no Intellij mas não rodava no Spring Tool Suite 4.
+
 ![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/cc5beb78-9aeb-494b-97a6-294ccf6acb9e)
 
 ![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/74cd045b-ce4a-48ff-939f-e58f9a4fa1be)
