@@ -13,6 +13,8 @@ OBS: Sugerimos que utilize a versão que está na pasta "LABIRINTOAED2SPRING", e
 
 ![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/cc5beb78-9aeb-494b-97a6-294ccf6acb9e)
 
-![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/74cd045b-ce4a-48ff-939f-e58f9a4fa1be)
+
+![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/7ef1056e-27b0-4a98-9afe-8afdbe546123)
+
 
 ![image](https://github.com/ViniciusLeiteCosta/AED-LabirintoBFS/assets/92338016/806a6abe-ab05-4647-8024-82da8b7828af)
