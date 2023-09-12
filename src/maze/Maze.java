@@ -68,6 +68,9 @@ public class Maze extends JFrame {
     //tempo de parada
     long stopTime;
 
+    // take copy of the original maze, used when we want to remove (clear) the solution from the JFrame
+    int[][] savedMaze = clone();
+
     // o construtor do labirinto, isso será a primeira coisa que será executada quando criar um objeto dessa classe.
     public Maze() {
         setTitle("Labirinto");
@@ -106,6 +109,7 @@ public class Maze extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int x[][] = GenerateArray();
                 repaint = true;
+                restore(x);
                 repaint();
             }
         });
@@ -123,10 +127,12 @@ public class Maze extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (arr == null) {
+                    restore(savedMaze);
                     repaint = false;
                     solveQueue();
                     repaint();
                 } else {
+                    restore(arr);
                     repaint = false;
                     solveQueue();
                     repaint();
@@ -184,8 +190,8 @@ public class Maze extends JFrame {
 
     }
 
-    public boolean isMarked(MazePos pos) {   //overloaded of isMarked(int i, int j) , parameter is the node itself
-        return isMarked(pos.i(), pos.j());   //extract the position of the cell (i and j) and call the first method isMarked(int i, int j)
+    public boolean isMarked(MazePos pos) {
+        return isMarked(pos.i(), pos.j());   
     }
 
     // retornar verdadeiro se o nó é igual 0 (Branco, Inexplorado)
@@ -195,8 +201,8 @@ public class Maze extends JFrame {
 
     }
 
-    public boolean isClear(MazePos pos) {   //overloaded of isClear(int i, int j) , parameter is the node itself
-        return isClear(pos.i(), pos.j());   //extract the position of the cell (i and j) and call the first method isClear(int i, int j)
+    public boolean isClear(MazePos pos) {
+        return isClear(pos.i(), pos.j());
     }
 
     // para ter certeza se chegou na saida (Teste)
@@ -205,12 +211,12 @@ public class Maze extends JFrame {
         return (i == Maze.END_I && j == Maze.END_J);
     }
 
-    public boolean isFinal(MazePos pos) {  //overloaded of isFinal(int i, int j) , parameter is the node itself
-        return isFinal(pos.i(), pos.j());  //extract the position of the cell (i and j) and call the first method isFinal(int i, int j)
+    public boolean isFinal(MazePos pos) {
+        return isFinal(pos.i(), pos.j());
     }
 
     // fazer copia do labirinto original
-    public int[][] clone() { //used to create savedMaze[][] we already discussed its use before
+    public int[][] clone() {
         int[][] mazeCopy = new int[Size()][Size()];
         for (int i = 0; i < Size(); i++) {
             for (int j = 0; j < Size(); j++) {
@@ -218,6 +224,18 @@ public class Maze extends JFrame {
             }
         }
         return mazeCopy;
+    }
+
+    // para restaurar o labirinto ao estado inicial
+    public void restore(int[][] savedMazed) {
+        for (int i = 0; i < Size(); i++) {
+            for (int j = 0; j < Size(); j++) {
+                maze[i][j] = savedMazed[i][j];
+            }
+        }
+
+        maze[1][1] = 2;  // ponto inicial
+        maze[2][9] = 8;  // objetivo
     }
 
     //gerar labirinto aleatório com valores de 0 e 1 (blocos preto e branco)
@@ -317,6 +335,8 @@ public class Maze extends JFrame {
     }
 
     public void solveQueue() { //BFS .
+        //Iniciar Timer
+        startTime = System.nanoTime();
 
         //criar LinkedList de MazPos (o nó) é o que nós iremos adicionar e remover da LinkedList
         LinkedList<MazePos> list = new LinkedList<MazePos>();
@@ -338,8 +358,7 @@ public class Maze extends JFrame {
             //marcar a posição atual como explorada
             mark(crt, V);
 
-            //adiciona os vizinhos na lista
-
+            //adicionar nós vizinhos na fila
             next = crt.north();    //cima
             if (isInMaze(next) && isClear(next)) { //isClear() function is used to implement Graph Search
                 list.add(next);
@@ -369,5 +388,4 @@ public class Maze extends JFrame {
         System.out.println("\nAchar o caminho por algoritmo BFS: ");
         Print();
     }
-    
 }
